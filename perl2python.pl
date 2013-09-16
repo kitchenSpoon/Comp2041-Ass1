@@ -18,9 +18,9 @@ while ($line = <>) {
 	} elsif ($line =~ /^\s*print\s*"(.*)\\n"[\s;]*$/) {
 		# Python's print adds a new-line character by default
 		# so we need to delete it from the Perl print statement
-		#$temp = $1;
-		#$temp  =~ s/;//g;		
-		print "print \"$1\"\n";
+		$temp = $1;
+		$temp  =~ s/\$//g;		
+		print "print \"$temp\"\n";
 	} elsif ($line =~ /\$/) {
 		$line =~ s/\$//g;
 		$line =~ s/;//g;
