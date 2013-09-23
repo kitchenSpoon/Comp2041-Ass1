@@ -15,7 +15,7 @@ while ($line = <>) {
 		# Blank & comment lines can be passed unchanged
 		
 		print $line;
-	} elsif ($line =~ /^\s*print\s*"(.*)\\n"[\s;]*$/) {
+	} elsif ($line =~ /^\s*print\s*"(.*)\\n"[\s;]*$/) {#need to match print with varible and strings
 		# Python's print adds a new-line character by default
 		# so we need to delete it from the Perl print statement
 		$string = $1;
@@ -23,15 +23,21 @@ while ($line = <>) {
 		if($string =~ /\$/)
 		{
 			$string  =~ s/\$//g;
-			$string =~ s/\"\\n\"$//;
-			print "print $stringa";
+			#$string =~ s/\"\\n\"$//;
+			print "print $string\n";
 		}
 		#if print has no variable
 		else
 		{
 			print "print \"$string\"\n";
 		}
-				
+	
+	} elsif ($line =~ /^\s*if\s*\(.*\)\s*{$/) {
+		
+		#lines that have varibles
+		$line =~ s/\$//g;
+		$line =~ s/;//g;
+		print "$line\n";	
 		
 	} elsif ($line =~ /\$/) {
 		
