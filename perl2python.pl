@@ -10,42 +10,59 @@ while ($line = <>) {
 		# translate #! line 
 		
 		print "#!/usr/bin/python2.7 -u\n";
+	##################################################
 	} elsif ($line =~ /^\s*#/ || $line =~ /^\s*$/) {
 	
 		# Blank & comment lines can be passed unchanged
 		
 		print $line;
-	} elsif ($line =~ /^\s*print\s*"(.*)\\n"[\s;]*$/) {#need to match print with varible and strings
+	#################################################################
+	} elsif ($line =~ /^(\s*)print\s*"(.*)\\n"[\s;]*$/) {#need to match print with varible and strings
 		# Python's print adds a new-line character by default
 		# so we need to delete it from the Perl print statement
-		$string = $1;
+		$string = $2;
+		$indent = $1;
 		#if print has variable
 		if($string =~ /\$/)
 		{
 			$string  =~ s/\$//g;
 			#$string =~ s/\"\\n\"$//;
-			print "print $string\n";
+			print $indent,"print $string\n";
 		}
 		#if print has no variable
 		else
 		{
-			print "print \"$string\"\n";
+			print $indent,"print \"$string\"\n";
 		}
 	
+	####################################################
 	} elsif ($line =~ /^\s*if\s*\(.*\)\s*{$/) {
 		
-		#lines that have varibles
-		$line =~ s/\$//g;
-		$line =~ s/;//g;
-		print "$line\n";	
+		#if conditions if(){
+		$line =~ s/[\$()]//g;
+		$line =~ s/{/:/g;
+		print "$line";	
+	} elsif ($line =~ /^\s*while\s*\(.*\)\s*{$/) {
 		
+		#if conditions if(){
+		$line =~ s/[\$()]//g;
+		$line =~ s/{/:/g;
+		print "$line";	
+		
+	} elsif ($line =~ /^\s*}\s*$/) {
+		
+		#if conditions }
+		#do nothing
+		$line =~ s/}//g;
+	######################################################
 	} elsif ($line =~ /\$/) {
 		
 		#lines that have varibles
 		$line =~ s/\$//g;
 		$line =~ s/;//g;
-		print "$line\n";
+		print "$line";
 	
+	######################################################
 	} else {
 	
 		# Lines we can't translate are turned into comments
