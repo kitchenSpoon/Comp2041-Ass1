@@ -18,10 +18,24 @@ while ($line = <>) {
 	} elsif ($line =~ /^\s*print\s*"(.*)\\n"[\s;]*$/) {
 		# Python's print adds a new-line character by default
 		# so we need to delete it from the Perl print statement
-		$temp = $1;
-		$temp  =~ s/\$//g;		
-		print "print \"$temp\"\n";
+		$string = $1;
+		#if print has variable
+		if($string =~ /\$/)
+		{
+			$string  =~ s/\$//g;
+			$string =~ s/\"\\n\"$//;
+			print "print $stringa";
+		}
+		#if print has no variable
+		else
+		{
+			print "print \"$string\"\n";
+		}
+				
+		
 	} elsif ($line =~ /\$/) {
+		
+		#lines that have varibles
 		$line =~ s/\$//g;
 		$line =~ s/;//g;
 		print "$line\n";
