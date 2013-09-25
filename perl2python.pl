@@ -10,6 +10,7 @@ while ($line = <>) {
 		# translate #! line 
 		
 		print "#!/usr/bin/python2.7 -u\n";
+		print "import sys";
 	##################################################
 	} elsif ($line =~ /^\s*#/ || $line =~ /^\s*$/) {
 	
@@ -39,12 +40,15 @@ while ($line = <>) {
 	} elsif ($line =~ /^\s*if\s*\(.*\)\s*{$/) {
 		
 		#if conditions if(){
+		$line =~ s/eq/==/g;
 		$line =~ s/[\$()]//g;
 		$line =~ s/{/:/g;
 		print "$line";	
+
 	} elsif ($line =~ /^\s*while\s*\(.*\)\s*{$/) {
 		
-		#if conditions if(){
+		#while conditions while(){
+		$line =~ s/eq/==/g;
 		$line =~ s/[\$()]//g;
 		$line =~ s/{/:/g;
 		print "$line";	
@@ -54,6 +58,33 @@ while ($line = <>) {
 		#if conditions }
 		#do nothing
 		$line =~ s/}//g;
+		
+	} elsif ($line =~ /\s*foreach\s*(.*)\s*\((\@ARGV)\)\s*{/) {
+		#foreach $arg (@ARGV)
+		$var=$1;
+		$var =~ s/\$//g;
+		print "for $var in sys.argv[1:]:\n";
+	
+	#######################################################
+	} elsif ($line =~ /(\s*)chomp (.*)\s*;\s*/) {
+		
+		#chomp
+		#$line =~ s/\$//g;
+		#$line =~ s/;//g;
+		$indent=$1;
+		$var=$2;
+		$var =~ s/\$//g;
+		print "$indent$var = $var.rstrip()\n";
+	
+	######################################################
+	} elsif ($line =~ /.*<STDIN>.*/) {
+		
+		#<STDIN>
+		$line =~ s/\$//g;
+		$line =~ s/<STDIN>/sys.stdin.readline()/g;
+		#$line =~ s/;//g;
+		print "$line";
+	
 	######################################################
 	} elsif ($line =~ /\$/) {
 		
@@ -61,6 +92,14 @@ while ($line = <>) {
 		$line =~ s/\$//g;
 		$line =~ s/;//g;
 		print "$line";
+	
+	#######################################################
+	} elsif ($line =~ /(\s*)last\s*;\s*/) {
+		
+		#break
+		#$line =~ s/\$//g;
+		#$line =~ s/;//g;
+		print "$1break\n";
 	
 	######################################################
 	} else {
