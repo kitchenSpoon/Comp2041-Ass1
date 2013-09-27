@@ -110,7 +110,7 @@ while ($line = <>) {
 		#break
 		#$line =~ s/\$//g;
 		#$line =~ s/;//g;
-		print "$1break\n";
+		print "$1","break\n";
 	
 	######################################################
 	} else {
