@@ -59,6 +59,14 @@ while ($line = <>) {
 		#do nothing
 		$line =~ s/}//g;
 		
+	} elsif ($line =~ /\s*foreach\s*(.*)\s*\((\d)\.\.(\d)\)\s*{/) {
+		#foreach $i(0..4)
+		$var=$1; #this has a extra space behind it WHY!!!???
+		$firstNum=$2;
+		$secondNum=$3+1;
+		$var =~ s/\$//g;
+		print "for $var in xrange($firstNum,$secondNum):\n";
+		
 	} elsif ($line =~ /\s*foreach\s*(.*)\s*\((\@ARGV)\)\s*{/) {
 		#foreach $arg (@ARGV)
 		$var=$1;
