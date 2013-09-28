@@ -4,13 +4,31 @@
 # as a starting point for COMP2041/9041 assignment 
 # http://cgi.cse.unsw.edu.au/~cs2041/13s2/assignments/perl2python
 
+
+$impSys=0;
 while ($line = <>) {
-	if ($line =~ /^#!/ && $. == 1) {
+	if ($line =~ /.*<STDIN>.*/)
+	{
+		$impSys=1;
+	}	
+	push @bunchOfLines,$line;
+	
+}
+$lineNum=0;
+foreach $line (@bunchOfLines) {
+	#print $lineNum++; carefull, as we print extra lines this wont be accurate
+	$lineNum++;
+	if ($line =~ /^#!/ && $lineNum == 1) {
 	
 		# translate #! line 
 		
 		print "#!/usr/bin/python2.7 -u\n";
-		print "import sys";
+		
+		if($impSys==1)
+		{
+			print "import sys";
+		}
+		
 	##################################################
 	} elsif ($line =~ /^\s*#/ || $line =~ /^\s*$/) {
 	
