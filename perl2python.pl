@@ -6,11 +6,21 @@
 
 
 $impSys=0;
+$impFI=0;
+$impRE=0;
 while ($line = <>) {
 	if ($line =~ /.*<STDIN>.*/)
 	{
 		$impSys=1;
+	}
+	if ($line =~ /.*<>.*/)
+	{
+		$impFI=1;
 	}	
+	if ($line =~ m{.*s/.*/.*/.*})
+	{
+		$impRE=1;
+	}		
 	push @bunchOfLines,$line;
 	
 }
@@ -26,7 +36,15 @@ foreach $line (@bunchOfLines) {
 		
 		if($impSys==1)
 		{
-			print "import sys";
+			print "import sys\n";
+		}
+		if($impFI==1)
+		{
+			print "import fileinput\n";
+		}
+		if($impRE==1)
+		{
+			print "import re\n";
 		}
 		
 	##################################################
