@@ -24,7 +24,15 @@ while ($line = <>) {
 	
 	######################################################
 	if ($line =~ m{(.*)\s*=~\s*s/(.*)/(.*)/.*\s*;\s*}) {
+		#regex s///;
+		$var=$1;
+		$toMatch=$2;
+		$toReplace=$3;
 		
+		$line = "$var = re.sub(r'$toMatch','$toReplace',$var)\n";
+	}
+	elsif ($line =~ /<>/) {
+		#regex s///;
 		$var=$1;
 		$toMatch=$2;
 		$toReplace=$3;
