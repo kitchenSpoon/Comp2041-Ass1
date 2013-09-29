@@ -1,1 +1,1 @@
-perl2python.pl
+../perl2python.pl
