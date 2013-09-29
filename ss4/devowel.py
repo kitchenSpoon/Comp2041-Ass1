@@ -1,7 +1,10 @@
 #!/usr/bin/python2.7 -u
-import fileinput, re
+import sys
+import fileinput
+import re
 
-for line in fileinput.input():
+while line = <> :
     line = line.rstrip()
-    line = re.sub(r'[aeiou]', '', line)
+# = re.sub(r'[aeiou]','',)
+
     print line

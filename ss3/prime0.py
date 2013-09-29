@@ -1,13 +1,14 @@
 #!/usr/bin/python2.7 -u
+import sys
 
 count = 0
 i = 2
-while i < 100:
+while i < 100 :
     k = i / 2
     j = 2
-    while j <= k:
+    while j <= k :
         k = i % j
-        if k == 0:
+        if k == 0 :
             count = count - 1
             break
         k = i / 2

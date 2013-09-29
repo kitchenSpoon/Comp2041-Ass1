@@ -5,6 +5,6 @@ import sys
 
 line = ""
 line_count = 0
-for line in sys.stdin:
-    line_count += 1
-print line_count, "lines"
+while line = <STDIN> :
+    line_count+=1
+print line_count lines

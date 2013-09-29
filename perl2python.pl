@@ -9,7 +9,7 @@ $impSys=0;
 $impFI=0;
 $impRE=0;
 while ($line = <>) {
-	if ($line =~ /.*<STDIN>.*/)
+	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*@ARGV.*/)
 	{
 		$impSys=1;
 	}
@@ -23,7 +23,7 @@ while ($line = <>) {
 	}		
 	
 	######################################################
-	if ($line =~ m{(.*)\s*=~\s*s/(.*)/(.*)/.*\s*;\s*}) {
+	if ($line =~ m{.*(.*)\s*=~\s*s/(.*)/(.*)/.*\s*;\s*}) {
 		#regex s///;
 		$var=$1;
 		$toMatch=$2;
@@ -31,13 +31,12 @@ while ($line = <>) {
 		
 		$line = "$var = re.sub(r'$toMatch','$toReplace',$var)\n";
 	}
-	elsif ($line =~ /<>/) {
-		#regex s///;
+	elsif ($line =~ m{.*(.*)\s*=~\s*/(.*)/.*}) {
+		#regex //;
 		$var=$1;
 		$toMatch=$2;
-		$toReplace=$3;
-		
-		$line = "$var = re.sub(r'$toMatch','$toReplace',$var)\n";
+		#need to test this case
+		$line = "$var = re.match('$toMatch','$var')\n";
 	}
 	
 	push @bunchOfLines,$line;
