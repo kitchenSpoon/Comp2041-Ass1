@@ -21,6 +21,17 @@ while ($line = <>) {
 	{
 		$impRE=1;
 	}		
+	
+	######################################################
+	if ($line =~ m{(.*)\s*=~\s*s/(.*)/(.*)/.*\s*;\s*}) {
+		
+		$var=$1;
+		$toMatch=$2;
+		$toReplace=$3;
+		
+		$line = "$var = re.sub(r'$toMatch','$toReplace',$var)\n";
+	}
+	
 	push @bunchOfLines,$line;
 	
 }
@@ -128,7 +139,9 @@ foreach $line (@bunchOfLines) {
 		$line =~ s/<STDIN>/sys.stdin.readline()/g;
 		#$line =~ s/;//g;
 		print "$line";
+		
 	
+		
 	######################################################
 	} elsif ($line =~ /\$/) {
 		
