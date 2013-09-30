@@ -71,6 +71,11 @@ foreach my $f(glob("ss4/*.pl"))
 		$output=`perl $f < ss4/devowel.arguments`;
 		$expectOutput=`python $pyF < ss4/devowel.arguments`;
 	}
+	elsif($f=~/echonl\.1\.pl/)
+	{
+		$output=`perl $f Hi 1 2 3 4 Bye`;
+		$expectOutput=`python $pyF Hi 1 2 3 4 Bye`;
+	}
 	elsif($f=~/line_count\.1\.pl/)
 	{
 		$output=`perl $f < ss4/line_count.1.input`;

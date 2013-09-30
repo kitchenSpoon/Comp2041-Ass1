@@ -9,7 +9,7 @@ $impSys=0;
 $impFI=0;
 $impRE=0;
 while ($line = <>) {
-	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*@ARGV.*/)
+	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*@ARGV.*/ or $line =~ /.*\$#ARGV.*/)
 	{
 		$impSys=1;
 	}
@@ -21,8 +21,27 @@ while ($line = <>) {
 	{
 		$impRE=1;
 	}		
-	
 	######################################################
+	#$#ARGV
+	if ($line =~ m{.*(\$#ARGV).*}) {
+		#$#ARGV
+		$line =~ s/\$#ARGV/len(sys.argv) - 1/g;
+		
+		
+	}
+	if ($line =~ m{.*\$ARGV\[(\$.*)\].*}) {
+		#$#ARGV
+		#print $1,"a\n";
+		$line =~ s/ARGV/sys.argv/g;
+		#$line =~ s/$1/$1 + 1/g; #why this no work??!!?
+		$line =~ s/\[(\$.*)\]/\[$1 + 1\]/g;
+		#print $1,"b\n";
+		#print $line;
+		
+		
+	}
+	######################################################
+	#REGEX
 	if ($line =~ m{.*(.*)\s*=~\s*s/(.*)/(.*)/.*\s*;\s*}) {
 		#regex s///;
 		$var=$1;
@@ -65,13 +84,13 @@ foreach $line (@bunchOfLines) {
 			print "import re\n";
 		}
 		
-	##################################################
+	##################################################Comment
 	} elsif ($line =~ /^\s*#/ || $line =~ /^\s*$/) {
 	
 		# Blank & comment lines can be passed unchanged
 		
 		print $line;
-	#################################################################
+	#################################################################Print
 	} elsif ($line =~ /^(\s*)print\s*"(.*)\\n"[\s;]*$/) {#need to match print with varible and strings
 		# Python's print adds a new-line character by default
 		# so we need to delete it from the Perl print statement
@@ -90,7 +109,7 @@ foreach $line (@bunchOfLines) {
 			print $indent,"print \"$string\"\n";
 		}
 	
-	####################################################
+	####################################################If
 	} elsif ($line =~ /^\s*if\s*\(.*\)\s*{$/) {
 		
 		#if conditions if(){
@@ -112,14 +131,36 @@ foreach $line (@bunchOfLines) {
 		#if conditions }
 		#do nothing
 		$line =~ s/}//g;
-		
-	} elsif ($line =~ /\s*foreach\s*(.*)\s*\((\d)\.\.(\d)\)\s*{/) {
-		#foreach $i(0..4)
+	
+	} elsif ($line =~ /\s*foreach\s*(.*)\s*\((0)\.\.(.+)\)\s*{/) {
+		#foreach $i(0..$#ARGV) -> xrange($#ARGV) 
+		#foreach $i(0..anything) -> xrange(anything)
 		$var=$1; #this has a extra space behind it WHY!!!???
 		$firstNum=$2;
-		$secondNum=$3+1;
+		$secondNum=$3;
+		if ($secondNum!~/len\(sys.argv\) - 1/) # check for $#ARGV 
+		{
+			$secondNum++;
+		}
+		
 		$var =~ s/\$//g;
+		print "for $var in xrange($secondNum):\n";
+		
+		
+	} elsif ($line =~ /\s*foreach\s*(.*)\s*\(([^0]+)\.\.(.+)\)\s*{/) {
+		#foreach $i(2..4) -> xrange(2,4)
+		$var=$1; #this has a extra space behind it WHY!!!???
+		$firstNum=$2;
+		$secondNum=$3;
+		if ($secondNum!~/len\(sys.argv\) - 1/) # check for $#ARGV 
+		{
+			$secondNum++;
+		}
+		$var =~ s/\$//g;
+		print "# $& 2\n";
 		print "for $var in xrange($firstNum,$secondNum):\n";
+		
+	
 		
 	} elsif ($line =~ /\s*foreach\s*(.*)\s*\((\@ARGV)\)\s*{/) {
 		#foreach $arg (@ARGV)
@@ -127,7 +168,7 @@ foreach $line (@bunchOfLines) {
 		$var =~ s/\$//g;
 		print "for $var in sys.argv[1:]:\n";
 	
-	#######################################################
+	#######################################################Chomp
 	} elsif ($line =~ /(\s*)chomp (.*)\s*;\s*/) {
 		
 		#chomp
@@ -138,7 +179,7 @@ foreach $line (@bunchOfLines) {
 		$var =~ s/\$//g;
 		print "$indent$var = $var.rstrip()\n";
 	
-	######################################################
+	######################################################<STDIN>
 	} elsif ($line =~ /.*<STDIN>.*/) {
 		
 		#<STDIN>
