@@ -46,6 +46,11 @@ foreach my $f(glob("ss3/*.pl"))
 		$output=`perl $f < ss3/cookie0.input`;
 		$expectOutput=`python $pyF < ss3/cookie0.input`;
 	}
+	elsif($f=~/echo\.2\.pl/)
+	{
+		$output=`perl $f Hi 1 3 5 Bye`;
+		$expectOutput=`python $pyF Hi 1 3 5 Bye`;
+	}
 	elsif($f=~/echonl\.0\.pl/)
 	{
 		$output=`perl $f testing1 testing2`;

@@ -20,7 +20,39 @@ while ($line = <>) {
 	if ($line =~ m{.*s/.*/.*/.*})
 	{
 		$impRE=1;
-	}		
+	}	
+	######################################################
+	#join
+	if ($line =~ m{(.*)join\((.*),(.*)\)(.*)}) {
+		#$#ARGV
+		
+		#$line =~ s/\$#ARGV/len(sys.argv) - 1/g;
+		#print $1,"\n";
+		#print $2,"\n";
+		#print $3,"\n";
+		#print $4,"\n";
+		
+		$before =$1;
+		$joinFirstArg=$2;
+		$joinSecondArg=$3;
+		$after=$4;
+		if($joinFirstArg =~ /.*@ARGV.*/)
+		{
+			print $1;
+			$line = "$before"."$joinFirstArg."."join(sys.argv[1:])$after"; 
+		}
+		else
+		{
+			$line = "$before"."$joinFirstArg."."join($joinSecondArg)$after"; 
+		}
+		#print $before,"\n";
+		#print $joinFirstArg,"\n";
+		#print $joinSecondArg,"\n";
+		#print $after,"\n";
+		#print $line," line\n";
+		#print $1."asdasdasd\n";
+		
+	}
 	######################################################
 	#$#ARGV
 	if ($line =~ m{.*(\$#ARGV).*}) {
@@ -30,7 +62,7 @@ while ($line = <>) {
 		
 	}
 	if ($line =~ m{.*\$ARGV\[(\$.*)\].*}) {
-		#$#ARGV
+		#$ARGV[]
 		#print $1,"a\n";
 		$line =~ s/ARGV/sys.argv/g;
 		#$line =~ s/$1/$1 + 1/g; #why this no work??!!?
@@ -108,7 +140,25 @@ foreach $line (@bunchOfLines) {
 		{
 			print $indent,"print \"$string\"\n";
 		}
-	
+	#################################################################Print
+	} elsif ($line =~ /(\s*)print(.*)"\\n"\s*./) {#need to match print with varible and strings
+		# Python's print adds a new-line character by default
+		# so we need to delete it from the Perl print statement
+		$string = $2;
+		$indent = $1;
+		#if print has variable
+		$string =~ s/,\s*$//g;
+		if($string =~ /\$/)
+		{
+			$string  =~ s/\$//g;
+			#$string =~ s/\"\\n\"$//;
+			print $indent,"print $string\n";
+		}
+		#if print has no variable
+		else
+		{
+			print $indent,"print $string\n"; 
+		}
 	####################################################If
 	} elsif ($line =~ /^\s*if\s*\(.*\)\s*{$/) {
 		
