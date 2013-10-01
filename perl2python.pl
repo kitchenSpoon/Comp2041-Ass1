@@ -8,6 +8,7 @@
 $impSys=0;
 $impFI=0;
 $impRE=0;
+%varTypes;
 while ($line = <>) {
 	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*@ARGV.*/ or $line =~ /.*\$#ARGV.*/)
 	{
@@ -22,15 +23,38 @@ while ($line = <>) {
 		$impRE=1;
 	}	
 	######################################################
+	#varTypes
+	if ($line =~ m{(\$\S*)\s*[%<>(==)]\s*\d+}) { # carefull here
+		#varTypes
+		$varTypes[$1]="float";
+
+
+		
+	}
+	######################################################
+	#split
+	if ($line =~ m{(.*)split\((.*),(.*)\)(.*)}) {
+		#split
+		
+		$before =$1;
+		$splitFirstArg=$2;
+		$splitSecondArg=$3;
+		$after=$4;
+		
+		print $before,"\n";
+		print $splitFirstArg,"\n";
+		print $splitSecondArg,"\n";
+		print $after,"\n";
+		$line = "$before"."$splitSecondArg.split($splitFirstArg)$after";
+		print $line," myline\n";
+
+		
+	}
+	######################################################
 	#join
 	if ($line =~ m{(.*)join\((.*),(.*)\)(.*)}) {
-		#$#ARGV
-		
-		#$line =~ s/\$#ARGV/len(sys.argv) - 1/g;
-		#print $1,"\n";
-		#print $2,"\n";
-		#print $3,"\n";
-		#print $4,"\n";
+		#join
+
 		
 		$before =$1;
 		$joinFirstArg=$2;
@@ -45,12 +69,7 @@ while ($line = <>) {
 		{
 			$line = "$before"."$joinFirstArg."."join($joinSecondArg)$after"; 
 		}
-		#print $before,"\n";
-		#print $joinFirstArg,"\n";
-		#print $joinSecondArg,"\n";
-		#print $after,"\n";
-		#print $line," line\n";
-		#print $1."asdasdasd\n";
+
 		
 	}
 	######################################################
@@ -74,13 +93,15 @@ while ($line = <>) {
 	}
 	######################################################
 	#REGEX
-	if ($line =~ m{.*(.*)\s*=~\s*s/(.*)/(.*)/.*\s*;\s*}) {
+	if ($line =~ m{(\s*)(.*)\s*=~\s*s/(.*)/(.*)/.*\s*;\s*}) {
 		#regex s///;
-		$var=$1;
-		$toMatch=$2;
-		$toReplace=$3;
+	
+		$indent = $1;
+		$var=$2;
+		$toMatch=$3;
+		$toReplace=$4;
 		
-		$line = "$var = re.sub(r'$toMatch','$toReplace',$var)\n";
+		$line = "$indent$var = re.sub(r'$toMatch','$toReplace',$var)\n";
 	}
 	elsif ($line =~ m{.*(.*)\s*=~\s*/(.*)/.*}) {
 		#regex //;
@@ -123,9 +144,12 @@ foreach $line (@bunchOfLines) {
 		
 		print $line;
 	#################################################################Print
-	} elsif ($line =~ /^(\s*)print\s*"(.*)\\n"[\s;]*$/) {#need to match print with varible and strings
+	} elsif ($line =~ /^(\s*)print\s*"(.*)\\n"[\s;]*$/) {
+		# need to match print with varible and strings
 		# Python's print adds a new-line character by default
 		# so we need to delete it from the Perl print statement
+		
+		#print string with newline
 		$string = $2;
 		$indent = $1;
 		#if print has variable
@@ -140,10 +164,38 @@ foreach $line (@bunchOfLines) {
 		{
 			print $indent,"print \"$string\"\n";
 		}
+		#print "First print\n";
 	#################################################################Print
-	} elsif ($line =~ /(\s*)print(.*)"\\n"\s*./) {#need to match print with varible and strings
+	} elsif ($line =~ /^(\s*)print\s*"(.*)"[\s;]*$/) {
+		# need to match print with varible and strings
 		# Python's print adds a new-line character by default
 		# so we need to delete it from the Perl print statement
+		
+		#print string without newline
+		$string = $2;
+		$indent = $1;
+		#if print has variable
+		if($string =~ /\$/)
+		{
+			$string  =~ s/\$//g;
+			#$string =~ s/\"\\n\"$//;
+			print $indent,"sys.stdout.write(\"$string\")\n";
+		}
+		#if print has no variable
+		else
+		{
+			print $indent,"sys.stdout.write(\"$string\")\n";
+		}
+		#print $indent,"sys.stdout.write($string)";
+		#print "First print no nl\n";
+	#################################################################Print
+	} elsif ($line =~ /(\s*)print(.*)"\\n"\s*./) { 
+		# need to match print with varible and strings
+		# Python's print adds a new-line character by default
+		# so we need to delete it from the Perl print statement
+		
+		#print varible , "\n";
+		#ss1/answer4 , ss3/echo.2.
 		$string = $2;
 		$indent = $1;
 		#if print has variable
@@ -159,6 +211,7 @@ foreach $line (@bunchOfLines) {
 		{
 			print $indent,"print $string\n"; 
 		}
+		#print "Second print\n";
 	####################################################If
 	} elsif ($line =~ /^\s*if\s*\(.*\)\s*{$/) {
 		
@@ -167,7 +220,23 @@ foreach $line (@bunchOfLines) {
 		$line =~ s/[\$()]//g;
 		$line =~ s/{/:/g;
 		print "$line";	
-
+		
+	} elsif ($line =~ /^\s*while\s*\((.*)\s*=\s*<STDIN>\)\s*{$/) {
+	
+		#while conditions while($line = <STDIN>){
+		$var = $1;
+		$var =~ s/\$//g;
+		
+		print "for $var in sys.stdin:\n";
+		
+	} elsif ($line =~ /^\s*while\s*\((.*)\s*=\s*<>\)\s*{$/) {
+	
+		#while conditions while($line = <>){
+		$var = $1;
+		$var =~ s/\$//g;
+		
+		print "for $var in fileinput.input():\n";	
+		
 	} elsif ($line =~ /^\s*while\s*\(.*\)\s*{$/) {
 		
 		#while conditions while(){
@@ -175,6 +244,17 @@ foreach $line (@bunchOfLines) {
 		$line =~ s/[\$()]//g;
 		$line =~ s/{/:/g;
 		print "$line";	
+		
+	} elsif ($line =~ /^\s*}\s*.*{$/) {
+		
+		#if conditions } with something after
+		$line =~ s/} //g; #with space
+		$line =~ s/{/:/g;
+		$line =~ s/\$//g;
+		$line =~ s/elsif/elif/g;
+		$line =~ s/\(//g;
+		$line =~ s/\)//g;
+		print $line;
 		
 	} elsif ($line =~ /^\s*}\s*$/) {
 		
@@ -230,6 +310,24 @@ foreach $line (@bunchOfLines) {
 		print "$indent$var = $var.rstrip()\n";
 	
 	######################################################<STDIN>
+	} elsif ($line =~ /.*(\$\S*)\s*=\s*<STDIN>.*/) {
+		
+		#<STDIN> casting
+		if($varTypes[$1] eq 'float')
+		{
+			#print $1,$varTypes[$1],"\n";
+			$line =~ s/\$//g;
+			$line =~ s/<STDIN>/float(sys.stdin.readline())/g;
+		}
+		else
+		{
+			$line =~ s/\$//g;
+			$line =~ s/<STDIN>/sys.stdin.readline()/g;
+		}
+		print "$line";
+		
+	
+	######################################################<STDIN>
 	} elsif ($line =~ /.*<STDIN>.*/) {
 		
 		#<STDIN>
@@ -258,6 +356,14 @@ foreach $line (@bunchOfLines) {
 		#$line =~ s/\$//g;
 		#$line =~ s/;//g;
 		print "$1","break\n";
+		
+	#######################################################
+	} elsif ($line =~ /(\s*)next\s*;\s*/) {
+		
+		#break
+		#$line =~ s/\$//g;
+		#$line =~ s/;//g;
+		print "$1","continue\n";
 	
 	######################################################
 	} else {

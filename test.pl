@@ -65,6 +65,27 @@ foreach my $f(glob("ss3/*.pl"))
 	
 }
 print "End of Subset 3\n\n";
+foreach my $f(glob("test/*.pl"))
+{
+	$pyF=$f;
+	$pyF=~s/\.pl/.py/g;
+	print $f," ",$pyF,"\n";
+	`perl perl2python.pl $f > $pyF`;
+	if($f=~/cookie0\.pl/)
+	{
+		$output=`perl $f < ss3/cookie0.input`;
+		$expectOutput=`python $pyF < ss3/cookie0.input`;
+	}
+	else{
+		$output=`perl $f`;
+		$expectOutput=`python $pyF`;
+	}
+	
+	
+	print $output, $expectOutput;
+	
+}
+print "End of Test\n\n";
 foreach my $f(glob("ss4/*.pl"))
 {
 	$pyF=$f;
@@ -85,6 +106,11 @@ foreach my $f(glob("ss4/*.pl"))
 	{
 		$output=`perl $f < ss4/line_count.1.input`;
 		$expectOutput=`python $pyF < ss4/line_count.1.input`;
+	}
+	elsif($f=~/odd0\.pl/)
+	{
+		$output=`perl $f `;
+		$expectOutput=`python $pyF `;
 	}
 	else{
 		$output=`perl $f`;

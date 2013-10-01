@@ -4,11 +4,10 @@ import sys
 number = 0
 while number >= 0 :
     print "Enter number:"
-    number = sys.stdin.readline();
+    number = float(sys.stdin.readline());
     if number >= 0 :
         if number % 2 == 0 :
             print "Even"
-#        } else {
-
+        else :
             print "Odd"
 print "Bye"

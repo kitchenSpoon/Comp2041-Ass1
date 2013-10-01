@@ -3,8 +3,7 @@ import sys
 import fileinput
 import re
 
-while line = <> :
+for line  in fileinput.input():
     line = line.rstrip()
-# = re.sub(r'[aeiou]','',)
-
+    line  = re.sub(r'[aeiou]','',line )
     print line
