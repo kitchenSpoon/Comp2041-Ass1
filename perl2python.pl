@@ -32,6 +32,30 @@ while ($line = <>) {
 		
 	}
 	######################################################
+	#!
+	if ($line =~ m{[^#]+!.*}) { #check ! is not the first line
+		#.=
+		
+		$line =~ s/!/not/g;
+
+	}
+	######################################################
+	#||
+	if ($line =~ m{.*\|\|.*}) {
+		#.=
+		
+		$line =~ s/\|\|/or/g;
+
+	}
+	######################################################
+	#&&
+	if ($line =~ m{.*&&.*}) {
+		#.=
+		
+		$line =~ s/&&/and/g;
+
+	}
+	######################################################
 	#.=
 	if ($line =~ m{.*\.=.*}) {
 		#.=
@@ -226,7 +250,7 @@ foreach $line (@bunchOfLines) {
 		
 		#if conditions if(){
 		$line =~ s/eq/==/g;
-		$line =~ s/[\$()]//g;
+		$line =~ s/[\$()]/ /g;
 		$line =~ s/{/:/g;
 		print "$line";	
 		
@@ -250,7 +274,7 @@ foreach $line (@bunchOfLines) {
 		
 		#while conditions while(){
 		$line =~ s/eq/==/g;
-		$line =~ s/[\$()]//g;
+		$line =~ s/[\$()]/ /g;
 		$line =~ s/{/:/g;
 		print "$line";	
 		
