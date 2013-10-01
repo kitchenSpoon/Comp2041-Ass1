@@ -33,7 +33,7 @@ while ($line = <>) {
 	}
 	######################################################
 	#!
-	if ($line =~ m{[^#]+!.*}) { #check ! is not the first line
+	if ($line =~ m{[^#"]+![^"]}) { #check ! is not the first line
 		#.=
 		
 		$line =~ s/!/not/g;
@@ -74,12 +74,12 @@ while ($line = <>) {
 		$splitSecondArg=$3;
 		$after=$4;
 		
-		print $before,"\n";
-		print $splitFirstArg,"\n";
-		print $splitSecondArg,"\n";
-		print $after,"\n";
+		#print $before,"\n";
+		#print $splitFirstArg,"\n";
+		#print $splitSecondArg,"\n";
+		#print $after,"\n";
 		$line = "$before"."$splitSecondArg.split($splitFirstArg)$after";
-		print $line," myline\n";
+		#print $line," myline\n";
 
 		
 	}

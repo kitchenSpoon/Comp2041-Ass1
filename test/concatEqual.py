@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7 -u
 import sys
 
-a= "Hinot"
-b= "Andrewnot"
+a= "Hi!"
+b= "Andrew!"
 
 print  a
 a += b
