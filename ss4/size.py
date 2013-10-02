@@ -2,7 +2,7 @@
 import sys
 sys.stdout.write("Enter a number: ")
 a = float(sys.stdin.readline());
-if a < 0 :
+if   a < 0  :
     print "negative"
 elif a == 0 :
     print "zero"

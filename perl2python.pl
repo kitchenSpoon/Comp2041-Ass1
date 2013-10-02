@@ -65,6 +65,16 @@ while ($line = <>) {
 		
 	}
 	######################################################
+	#hash{} -> hash[]
+	if ($line =~ /.*\$\S+{(.+)}.*/) {
+		#.=
+		
+		$line =~ s/{/[/g;
+		$line =~ s/}/]/g;
+
+		
+	}
+	######################################################
 	#split
 	if ($line =~ m{(.*)split\((.*),(.*)\)(.*)}) {
 		#split
@@ -147,6 +157,11 @@ while ($line = <>) {
 	push @bunchOfLines,$line;
 	
 }
+
+######################### Second Round #######################################################
+######################### Second Round #######################################################
+######################### Second Round #######################################################
+######################### Second Round #######################################################
 $lineNum=0;
 foreach $line (@bunchOfLines) {
 	#print $lineNum++; carefull, as we print extra lines this wont be accurate
@@ -207,10 +222,11 @@ foreach $line (@bunchOfLines) {
 		#print string without newline
 		$string = $2;
 		$indent = $1;
-		#if print has variable
-		if($string =~ /\$/)
+		#if print has variable or array
+		if($string =~ /\$/ || $string =~ /@/)
 		{
 			$string  =~ s/\$//g;
+			$string  =~ s/@//g;
 			#$string =~ s/\"\\n\"$//;
 			print $indent,"sys.stdout.write(\"$string\")\n";
 		}
@@ -233,9 +249,10 @@ foreach $line (@bunchOfLines) {
 		$indent = $1;
 		#if print has variable
 		$string =~ s/,\s*$//g;
-		if($string =~ /\$/)
+		if($string =~ /\$/ || $string =~ /@/)
 		{
-			$string  =~ s/\$//g;
+			$string =~ s/\$//g;
+			$string =~ s/@//g;
 			#$string =~ s/\"\\n\"$//;
 			print $indent,"print $string\n";
 		}
@@ -369,8 +386,31 @@ foreach $line (@bunchOfLines) {
 		#$line =~ s/;//g;
 		print "$line";
 		
-	
+	######################################################
+	#} elsif ($line =~ //) {
 		
+		#push
+		
+	
+	######################################################
+	} elsif ($line =~ /(.*@\S+\s*=\s*)(.*)\((.*)\)/) {
+		
+		#lines that have array assignment
+		$function=$2;
+		$before=$1;
+		$infunction=$3;
+		#reverse array
+		if ($function =~ /reverse/)
+		{
+			$line = "$before"."$infunction"."[::-1]";
+		}
+		
+		$line =~ s/\@//g;
+		$line =~ s/;//g;
+		$line =~ s/\(/[/g;
+		$line =~ s/\)/]/g;
+		print "$line";
+	
 	######################################################
 	} elsif ($line =~ /\$/) {
 		
