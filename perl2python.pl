@@ -385,12 +385,32 @@ foreach $line (@bunchOfLines) {
 		$line =~ s/<STDIN>/sys.stdin.readline()/g;
 		#$line =~ s/;//g;
 		print "$line";
+	######################################################
+	} elsif ($line =~ /unshift\s+@(.*),(.*)\s*;/) {
+		
+		#unshift
+		$line = "$1.insert(0,$2)";
+		print $line;
+	######################################################
+	} elsif ($line =~ /\bshift\s+@(.*)\s*;/) {
+		
+		#shift
+		$line = "$1.pop(0)";
+		print $line;
 		
 	######################################################
-	#} elsif ($line =~ //) {
+	} elsif ($line =~ /push\s+@(.*),(.*)\s*;/) {
 		
 		#push
+		$line = "$1.append($2)";
+		print $line;
 		
+	######################################################
+	} elsif ($line =~ /pop\s+@(.*)\s*;/) {
+		
+		#pop
+		$line = "$1.pop()";
+		print $line,"\n";
 	
 	######################################################
 	} elsif ($line =~ /(.*@\S+\s*=\s*)(.*)\((.*)\)/) {
