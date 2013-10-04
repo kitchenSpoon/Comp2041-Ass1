@@ -1,5 +1,4 @@
 #!/usr/bin/python2.7 -u
-import sys
 
 array = [1,2,'b']
 

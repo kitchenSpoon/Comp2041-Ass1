@@ -1,5 +1,4 @@
 #!/usr/bin/python2.7 -u
-import sys
 
 a=1
 b=0

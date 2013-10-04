@@ -1,5 +1,4 @@
 #!/usr/bin/python2.7 -u
-import sys
 
 n = 1
 while   n <= 10  :

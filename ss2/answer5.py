@@ -1,5 +1,4 @@
 #!/usr/bin/python2.7 -u
-import sys
 
 answer = 41
 if   answer > 0  :

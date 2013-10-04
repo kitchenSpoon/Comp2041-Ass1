@@ -10,7 +10,7 @@ $impFI=0;
 $impRE=0;
 %varTypes;
 while ($line = <>) {
-	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*@ARGV.*/ or $line =~ /.*\$#ARGV.*/) {
+	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*\@ARGV.*/ or $line =~ /.*\$#ARGV.*/) {
 		$impSys=1;
 	}
 	if ($line =~ /.*<>.*/) {
@@ -85,8 +85,8 @@ while ($line = <>) {
 		#print $splitFirstArg,"\n";
 		#print $splitSecondArg,"\n";
 		#print $after,"\n";
-		$line = "$before"."$splitSecondArg.split($splitFirstArg)$after";
-		#print $line," myline\n";
+		$line = "$before"."$splitSecondArg.split($splitFirstArg)$afters\n";
+		#print $line,"\n";
 
 		
 	}
@@ -94,18 +94,21 @@ while ($line = <>) {
 	#join
 	if ($line =~ m{(.*)join\((.*),(.*)\)(.*)}) {
 		#join
-
+		# i match print join --ERROR!
 		
 		$before =$1;
 		$joinFirstArg=$2;
 		$joinSecondArg=$3;
 		$after=$4;
-		if($joinFirstArg =~ /.*@ARGV.*/) {
-			print $1;
-			$line = "$before"."$joinFirstArg."."join(sys.argv[1:])$after"; 
+		#print "3: ",$3,"\n";
+		if($joinSecondArg =~ /.*\@ARGV.*/) {
+			#print "hey $& \n";
+			$line = "$before"."$joinFirstArg."."join(sys.argv[1:])$after\n"; 
 		}
 		else {
-			$line = "$before"."$joinFirstArg."."join($joinSecondArg)$after"; 
+			#print "yay\n";
+			$joinSecondArg =~ s/@//g;
+			$line = "$before"."$joinFirstArg."."join($joinSecondArg)$after\n"; 
 		}
 
 		
@@ -186,6 +189,8 @@ foreach $line (@bunchOfLines) {
 	
 	#################################################################Print
 	} elsif ($line =~ /(\s*)print\s+@([a-zA-Z0-9]+)\s*,*.*\s*;/) {
+	
+		#print Array
 		print "$1"."print \"\".join(map(str,$2))\n";
 	
 	#################################################################Print
@@ -414,8 +419,7 @@ foreach $line (@bunchOfLines) {
 		
 		$line =~ s/\@//g;
 		$line =~ s/;//g;
-		$line =~ s/\(/[/g;
-		$line =~ s/\)/]/g;
+		$line =~ s/([^a-zA-Z0-9])\((.*)\)/$1\[$2\]/g; #will not turn function() into function[]#
 		print "$line";
 	
 	######################################################
