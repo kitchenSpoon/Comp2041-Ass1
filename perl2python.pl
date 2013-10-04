@@ -144,11 +144,12 @@ while ($line = <>) {
 		
 		$line = "$indent$var = re.sub(r'$toMatch','$toReplace',$var)\n";
 	}
-	elsif ($line =~ m{.*(.*)\s*=~\s*/(.*)/.*}) {
+	elsif ($line =~ m{\s*(.*)\s*=~\s*/(.*)/.*}) {
 		#regex //;
 		$var=$1;
 		$toMatch=$2;
 		#need to test this case
+		print "$var\n";
 		$line = "$var = re.match('$toMatch','$var')\n";
 	}
 	
