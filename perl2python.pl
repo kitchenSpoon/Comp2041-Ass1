@@ -136,7 +136,7 @@ while ($line = <>) {
 	#REGEX
 	if ($line =~ m{(\s*)(.*)\s*=~\s*s/(.*)/(.*)/.*\s*;\s*}) {
 		#regex s///;
-	
+	    $impRE=1;
 		$indent = $1;
 		$var=$2;
 		$toMatch=$3;
@@ -144,13 +144,14 @@ while ($line = <>) {
 		
 		$line = "$indent$var = re.sub(r'$toMatch','$toReplace',$var)\n";
 	}
-	elsif ($line =~ m{\s*(.*)\s*=~\s*/(.*)/.*}) {
+	elsif ($line =~ m{\s*.*\s*(\$[a-zA-Z0-9]+)\s*=~\s*/(.*)/.*}) {
 		#regex //;
+		$impRE=1;
 		$var=$1;
 		$toMatch=$2;
 		#need to test this case
-		print "$var\n";
-		$line = "$var = re.match('$toMatch','$var')\n";
+		#print "$var\n";
+		$line =~ s{\$[a-zA-Z0-9]+\s*=~\s*/.*/}{bool(re.match(r'$toMatch',$var))}g;
 	}
 	
 	push @bunchOfLines,$line;
@@ -265,7 +266,8 @@ foreach $line (@bunchOfLines) {
 		#if conditions if(){
 		$line =~ s/eq/==/g;
 		$line =~ s/ne/!=/g;
-		$line =~ s/[\$()]/ /g;
+		$line =~ s/if\s*(.*)/if $1 /g; # to prevent removing () of functions in if
+		$line =~ s/[\$]/ /g;
 		$line =~ s/{/:/g;
 		print "$line";	
 		
@@ -300,8 +302,7 @@ foreach $line (@bunchOfLines) {
 		$line =~ s/{/:/g;
 		$line =~ s/\$//g;
 		$line =~ s/elsif/elif/g;
-		$line =~ s/\(//g;
-		$line =~ s/\)//g;
+		$line =~ s/if\s*(.*)/if $1 /g; # to prevent removing () of functions in if
 		print $line;
 		
 	} elsif ($line =~ /^\s*}\s*$/) {

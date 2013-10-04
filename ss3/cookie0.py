@@ -5,6 +5,6 @@ while  1  :
     print "Give me cookie"
     line = sys.stdin.readline();
     line = line.rstrip()
-    if   line == "cookie"  :
+    if   li!= == "cookie"  :
         break
 print "Thank you"
