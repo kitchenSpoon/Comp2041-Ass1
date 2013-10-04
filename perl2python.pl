@@ -10,16 +10,13 @@ $impFI=0;
 $impRE=0;
 %varTypes;
 while ($line = <>) {
-	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*@ARGV.*/ or $line =~ /.*\$#ARGV.*/)
-	{
+	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*@ARGV.*/ or $line =~ /.*\$#ARGV.*/) {
 		$impSys=1;
 	}
-	if ($line =~ /.*<>.*/)
-	{
+	if ($line =~ /.*<>.*/) {
 		$impFI=1;
 	}	
-	if ($line =~ m{.*s/.*/.*/.*})
-	{
+	if ($line =~ m{.*s/.*/.*/.*}) {
 		$impRE=1;
 	}	
 	######################################################
@@ -103,13 +100,11 @@ while ($line = <>) {
 		$joinFirstArg=$2;
 		$joinSecondArg=$3;
 		$after=$4;
-		if($joinFirstArg =~ /.*@ARGV.*/)
-		{
+		if($joinFirstArg =~ /.*@ARGV.*/) {
 			print $1;
 			$line = "$before"."$joinFirstArg."."join(sys.argv[1:])$after"; 
 		}
-		else
-		{
+		else {
 			$line = "$before"."$joinFirstArg."."join($joinSecondArg)$after"; 
 		}
 
@@ -172,16 +167,13 @@ foreach $line (@bunchOfLines) {
 		
 		print "#!/usr/bin/python2.7 -u\n";
 		
-		if($impSys==1)
-		{
+		if($impSys==1) {
 			print "import sys\n";
 		}
-		if($impFI==1)
-		{
+		if($impFI==1) {
 			print "import fileinput\n";
 		}
-		if($impRE==1)
-		{
+		if($impRE==1) {
 			print "import re\n";
 		}
 		
@@ -191,6 +183,11 @@ foreach $line (@bunchOfLines) {
 		# Blank & comment lines can be passed unchanged
 		
 		print $line;
+	
+	#################################################################Print
+	} elsif ($line =~ /(\s*)print\s+@([a-zA-Z0-9]+)\s*,*.*\s*;/) {
+		print "$1"."print \"\".join(map(str,$2))\n";
+	
 	#################################################################Print
 	} elsif ($line =~ /^(\s*)print\s*"(.*)\\n"[\s;]*$/) {
 		# need to match print with varible and strings
@@ -201,15 +198,13 @@ foreach $line (@bunchOfLines) {
 		$string = $2;
 		$indent = $1;
 		#if print has variable
-		if($string =~ /\$/)
-		{
+		if($string =~ /\$/) {
 			$string  =~ s/\$//g;
 			#$string =~ s/\"\\n\"$//;
 			print $indent,"print $string\n";
 		}
 		#if print has no variable
-		else
-		{
+		else {
 			print $indent,"print \"$string\"\n";
 		}
 		#print "First print\n";
@@ -223,16 +218,14 @@ foreach $line (@bunchOfLines) {
 		$string = $2;
 		$indent = $1;
 		#if print has variable or array
-		if($string =~ /\$/ || $string =~ /@/)
-		{
+		if($string =~ /\$/ || $string =~ /@/) {
 			$string  =~ s/\$//g;
 			$string  =~ s/@//g;
 			#$string =~ s/\"\\n\"$//;
 			print $indent,"sys.stdout.write(\"$string\")\n";
 		}
 		#if print has no variable
-		else
-		{
+		else {
 			print $indent,"sys.stdout.write(\"$string\")\n";
 		}
 		#print $indent,"sys.stdout.write($string)";
@@ -249,16 +242,14 @@ foreach $line (@bunchOfLines) {
 		$indent = $1;
 		#if print has variable
 		$string =~ s/,\s*$//g;
-		if($string =~ /\$/ || $string =~ /@/)
-		{
+		if($string =~ /\$/ || $string =~ /@/) {
 			$string =~ s/\$//g;
 			$string =~ s/@//g;
 			#$string =~ s/\"\\n\"$//;
 			print $indent,"print $string\n";
 		}
 		#if print has no variable
-		else
-		{
+		else {
 			print $indent,"print $string\n"; 
 		}
 		#print "Second print\n";
@@ -318,8 +309,7 @@ foreach $line (@bunchOfLines) {
 		$var=$1; #this has a extra space behind it WHY!!!???
 		$firstNum=$2;
 		$secondNum=$3;
-		if ($secondNum!~/len\(sys.argv\) - 1/) # check for $#ARGV 
-		{
+		if ($secondNum!~/len\(sys.argv\) - 1/) { # check for $#ARGV
 			$secondNum++;
 		}
 		
@@ -332,8 +322,7 @@ foreach $line (@bunchOfLines) {
 		$var=$1; #this has a extra space behind it WHY!!!???
 		$firstNum=$2;
 		$secondNum=$3;
-		if ($secondNum!~/len\(sys.argv\) - 1/) # check for $#ARGV 
-		{
+		if ($secondNum!~/len\(sys.argv\) - 1/) {# check for $#ARGV  
 			$secondNum++;
 		}
 		$var =~ s/\$//g;
@@ -363,14 +352,12 @@ foreach $line (@bunchOfLines) {
 	} elsif ($line =~ /.*(\$\S*)\s*=\s*<STDIN>.*/) {
 		
 		#<STDIN> casting
-		if($varTypes[$1] eq 'float')
-		{
+		if($varTypes[$1] eq 'float') {
 			#print $1,$varTypes[$1],"\n";
 			$line =~ s/\$//g;
 			$line =~ s/<STDIN>/float(sys.stdin.readline())/g;
 		}
-		else
-		{
+		else {
 			$line =~ s/\$//g;
 			$line =~ s/<STDIN>/sys.stdin.readline()/g;
 		}

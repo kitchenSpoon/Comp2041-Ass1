@@ -4,17 +4,17 @@ import sys
 array = [1,2,'b']
 
 array.append(5)
-print  array
+print "".join(map(str,array))
 
 array.pop()
 
-print  array
+print "".join(map(str,array))
 
 array.pop(0)
-print  array
+print "".join(map(str,array))
 
 array.insert(0,'Hi')
-print  array
+print "".join(map(str,array))
 
 rArray = array[::-1]
-print  rArray
+print "".join(map(str,rArray))
