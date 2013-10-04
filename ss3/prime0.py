@@ -7,7 +7,7 @@ while   i < 100  :
     j = 2
     while   j <=  k  :
         k = i % j
-        if   k == 0  :
+        if ( k == 0) : 
             count = count - 1
             break
         k = i / 2

@@ -4,7 +4,7 @@ import re
 a="Hello"
 
 if (bool(re.match(r'Hello', a))) : 
-	print "Yes it match: ",a
+	print "Yes it match"
 
 if (bool(re.match(r'Hel', a))) : 
-	print "Yes it does not match: ",a
+	print "Yes it does not match"
