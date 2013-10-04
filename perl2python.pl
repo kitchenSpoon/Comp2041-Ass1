@@ -263,6 +263,7 @@ foreach $line (@bunchOfLines) {
 		
 		#if conditions if(){
 		$line =~ s/eq/==/g;
+		$line =~ s/ne/!=/g;
 		$line =~ s/[\$()]/ /g;
 		$line =~ s/{/:/g;
 		print "$line";	
