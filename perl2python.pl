@@ -406,6 +406,16 @@ foreach $line (@bunchOfLines) {
 		#pop
 		$line = "$1.pop()";
 		print $line,"\n";
+		
+	######################################################
+	} elsif ($line =~ /\s*open\s\(\s*(.*)\s*,\s*(.*)\s*\)/) {
+		
+		#open
+		$handler=$1;
+		$file=$2;
+		$file =~ s/"//g;
+		$line = "$handler = open(\"$file\",'r')";
+		print $line,"\n";
 	
 	######################################################
 	} elsif ($line =~ /(.*@\S+\s*=\s*)(.*)\((.*)\)/) {
