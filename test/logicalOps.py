@@ -3,7 +3,7 @@
 a=1
 b=0
 
-if ( a== aand b== b): 
+if ( a== a and  b== b): 
         print "True"
 if ( a== a or  b== a): 
 	print "True"

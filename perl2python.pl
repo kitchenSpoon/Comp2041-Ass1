@@ -53,7 +53,7 @@ while ($line = <>) {
 	if ($line =~ m{.*&&.*}) {
 		#&&
 		
-		$line =~ s/\s+&&\s+/and/g;
+		$line =~ s/&&/and/g;
 
 	}
 	######################################################
@@ -192,7 +192,7 @@ foreach $line (@bunchOfLines) {
 		if($impRE==1) {
 			print "import re\n";
 		}
-		#print hash
+		#init hash
 		foreach (keys %myDicts) {
 			print "$_ = {}\n";
 		}
