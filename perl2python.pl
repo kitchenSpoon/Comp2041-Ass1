@@ -271,8 +271,8 @@ foreach $line (@bunchOfLines) {
 	} elsif ($line =~ /^\s*if\s*\(.*\)\s*{$/) {
 		
 		#if conditions if(){
-		$line =~ s/eq/==/g;
-		$line =~ s/ne/!=/g;
+		$line =~ s/\s+eq\s+/==/g;
+		$line =~ s/\s+ne\s+/!=/g;
 		$line =~ s/if\s*(.*)/if $1 /g; # to prevent removing () of functions in if
 		$line =~ s/[\$]/ /g;
 		$line =~ s/{/:/g;
