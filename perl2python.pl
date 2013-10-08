@@ -209,9 +209,18 @@ foreach $line (@bunchOfLines) {
 		# Blank & comment lines can be passed unchanged
 		
 		print $line;
-	
 	#################################################################Print
-	} elsif ($line =~ /(\s*)print\s+"(.*)"\s*;/ && $line !~ /.*ARGV.*/i) {
+	} elsif ($line =~ /(\s*)printf\s+"(.*)"\s*,\s*(.*)\s*;\s*/) {
+	
+		#printf 
+		$string=$2;
+		$var=$3;
+		$string =~ s/\\n//g;
+		$line = "$1"."print \"$string\" % $var \n";
+		$line =~ s/\$//g;
+		print $line;
+	#################################################################Print
+	} elsif ($line =~ /(\s*)print\s+"(.*)"\s*;\s*/ && $line !~ /.*ARGV.*/i) {
 	
 		#print variable interpolation
 		$indent=$1;
