@@ -1,4 +1,6 @@
 #!/usr/bin/python2.7 -u
+import sys
+import re
 
 n = 1
 while   n <= 10  :
@@ -10,5 +12,6 @@ while   n <= 10  :
             total = total + i
             i = i + 1
         j = j + 1
-    print total
+#asd
+    sys.stdout.write("{total}\n".format(**locals()))
     n = n + 1

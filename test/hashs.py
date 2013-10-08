@@ -1,4 +1,6 @@
 #!/usr/bin/python2.7 -u
+import sys
+import re
 myHash = {}
 
 myHash['a']=1

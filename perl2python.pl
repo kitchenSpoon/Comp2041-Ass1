@@ -5,7 +5,7 @@
 # http://cgi.cse.unsw.edu.au/~cs2041/13s2/assignments/perl2python
 
 
-$impSys=0;
+$impSys=1;
 $impFI=0;
 $impRE=0;
 %varTypes;
@@ -14,17 +14,23 @@ $impRE=0;
 #		First past of the inputs
 ##################################################################
 while ($line = <>) {
+	#Check what modules i need to import
+	#import sys if theres stdin and argv stuff
 	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*\@ARGV.*/ or $line =~ /.*\$#ARGV.*/) {
 		$impSys=1;
 	}
+	#import fileinput
 	if ($line =~ /.*<>.*/) {
 		$impFI=1;
 	}	
-	if ($line =~ m{.*s/.*/.*/.*}) {
+	#import regex if theres substitution or match
+	if ($line =~ m{.*s/.*/.*/.*} || $line =~ m{.*/.*/.*}) {
 		$impRE=1;
 	}	
 	######################################################
 	#varTypes
+	#varTypes is a hash use to store the type of variables, its use to figure out 
+	#if we need to cast a input to number.
 	if ($line =~ m{(\$\S*)\s*[%<>(==)]\s*\d+}) { # carefull here
 		#varTypes
 		$varTypes[$1]="float";
@@ -33,7 +39,7 @@ while ($line = <>) {
 		
 	}
 	######################################################
-	#!
+	# ! check for the ! operator and turn it into not
 	if ($line =~ m{[^#"]+![^"]}) { #check ! is not the first line
 		#!
 		
@@ -41,7 +47,7 @@ while ($line = <>) {
 
 	}
 	######################################################
-	#||
+	# || check for || operator 
 	if ($line =~ m{.*\|\|.*}) {
 		#||
 		
@@ -49,7 +55,7 @@ while ($line = <>) {
 
 	}
 	######################################################
-	#&&
+	# && check for && operator 
 	if ($line =~ m{.*&&.*}) {
 		#&&
 		
@@ -57,7 +63,7 @@ while ($line = <>) {
 
 	}
 	######################################################
-	#.=
+	# .= check for concatenation operator
 	if ($line =~ m{.*\.=.*}) {
 		#.=
 		
@@ -67,11 +73,15 @@ while ($line = <>) {
 	}
 	######################################################
 	#hash{} -> hash[]
-	if ($line =~ /.*\$(\S+){(.+)}.*/) {
+	#hash, checks for {}, if theres {}, its a hash, nobody use %(unless in a loop)
+	if ($line =~ /.*\$(\S+){(.+)}.*/) { 
 		#hash
+		#check if hash is initiated, if not store it into 
+		#my hash of dict so that i can init it later
 		if (!defined($myDicts{$1})) {
 			$myDicts{$1}=1;
 		}
+		#if we'll accessing the hash, just turn the {} into []
 		$line =~ s/{/[/g;
 		$line =~ s/}/]/g;
 
@@ -79,6 +89,7 @@ while ($line = <>) {
 	}
 	######################################################
 	#split
+	#match for split(stuff,stuff)
 	if ($line =~ m{(.*)split\((.*),(.*)\)(.*)}) {
 		#split
 		
@@ -87,12 +98,7 @@ while ($line = <>) {
 		$splitSecondArg=$3;
 		$after=$4;
 		
-		#print $before,"\n";
-		#print $splitFirstArg,"\n";
-		#print $splitSecondArg,"\n";
-		#print $after,"\n";
 		$line = "$before"."$splitSecondArg.split($splitFirstArg)$afters\n";
-		#print $line,"\n";
 
 		
 	}
@@ -202,6 +208,19 @@ foreach $line (@bunchOfLines) {
 	
 		# Blank & comment lines can be passed unchanged
 		
+		print $line;
+	
+	#################################################################Print
+	} elsif ($line =~ /(\s*)print\s+"(.*)"\s*;/ && $line !~ /.*ARGV.*/i) {
+	
+		#print variable interpolation
+		$indent=$1;
+		$toBePrinted=$2;
+		$var = $2;
+		$var =~ s/.*\$([a-zA-Z0-9_]+).*/$1/g;
+		$toBePrinted =~ s/\$([a-zA-Z0-9_]+)/{$1}/g;
+		$line = "$indent"."sys.stdout.write(\"$toBePrinted\".format(**locals()))\n";
+		print "#asd\n";
 		print $line;
 	
 	#################################################################Print

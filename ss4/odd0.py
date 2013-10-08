@@ -1,13 +1,18 @@
 #!/usr/bin/python2.7 -u
 import sys
+import re
 
 number = 0
 while   number >= 0  :
-    print "Enter number:"
+#asd
+    sys.stdout.write("Enter number:\n".format(**locals()))
     number = float(sys.stdin.readline());
     if ( number >= 0) : 
         if ( number % 2 == 0) : 
-            print "Even"
+#asd
+            sys.stdout.write("Even\n".format(**locals()))
         else :
-            print "Odd"
-print "Bye"
+#asd
+            sys.stdout.write("Odd\n".format(**locals()))
+#asd
+sys.stdout.write("Bye\n".format(**locals()))
