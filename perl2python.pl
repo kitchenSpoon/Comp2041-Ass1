@@ -9,6 +9,7 @@ $impSys=0;
 $impFI=0;
 $impRE=0;
 %varTypes;
+%myDicts;
 ##################################################################
 #		First past of the inputs
 ##################################################################
@@ -34,7 +35,7 @@ while ($line = <>) {
 	######################################################
 	#!
 	if ($line =~ m{[^#"]+![^"]}) { #check ! is not the first line
-		#.=
+		#!
 		
 		$line =~ s/!/not/g;
 
@@ -42,7 +43,7 @@ while ($line = <>) {
 	######################################################
 	#||
 	if ($line =~ m{.*\|\|.*}) {
-		#.=
+		#||
 		
 		$line =~ s/\|\|/or/g;
 
@@ -50,9 +51,9 @@ while ($line = <>) {
 	######################################################
 	#&&
 	if ($line =~ m{.*&&.*}) {
-		#.=
+		#&&
 		
-		$line =~ s/&&/and/g;
+		$line =~ s/\s+&&\s+/and/g;
 
 	}
 	######################################################
@@ -66,9 +67,11 @@ while ($line = <>) {
 	}
 	######################################################
 	#hash{} -> hash[]
-	if ($line =~ /.*\$\S+{(.+)}.*/) {
-		#.=
-		
+	if ($line =~ /.*\$(\S+){(.+)}.*/) {
+		#hash
+		if (!defined($myDicts{$1})) {
+			$myDicts{$1}=1;
+		}
 		$line =~ s/{/[/g;
 		$line =~ s/}/]/g;
 
@@ -146,6 +149,7 @@ while ($line = <>) {
 		$toReplace=$4;
 		
 		$line = "$indent$var = re.sub(r'$toMatch','$toReplace',$var)\n";
+		
 	}
 	elsif ($line =~ m{\s*.*\s*(\$[a-zA-Z0-9]+)\s*=~\s*/(.*)/.*}) {
 		#regex //;
@@ -187,6 +191,10 @@ foreach $line (@bunchOfLines) {
 		}
 		if($impRE==1) {
 			print "import re\n";
+		}
+		#print hash
+		foreach (keys %myDicts) {
+			print "$_ = {}\n";
 		}
 		
 	##################################################Comment
@@ -297,7 +305,8 @@ foreach $line (@bunchOfLines) {
 	} elsif ($line =~ /^\s*while\s*\(.*\)\s*{$/) {
 		
 		#while conditions while(){
-		$line =~ s/eq/==/g;
+		$line =~ s/\s+eq\s+/==/g;
+		$line =~ s/\s+ne\s+/!=/g;
 		$line =~ s/[\$()]/ /g;
 		$line =~ s/{/:/g;
 		print "$line";	
@@ -305,6 +314,8 @@ foreach $line (@bunchOfLines) {
 	} elsif ($line =~ /^\s*}\s*.*{$/) {
 		
 		#if conditions } with something after
+		$line =~ s/\s+eq\s+/==/g;
+		$line =~ s/\s+ne\s+/!=/g;
 		$line =~ s/} //g; #with space
 		$line =~ s/{/:/g;
 		$line =~ s/\$//g;
