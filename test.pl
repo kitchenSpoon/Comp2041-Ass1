@@ -1,7 +1,11 @@
 #!/usr/local/bin/perl -w
-
+$skipTap=1;
 foreach my $f(glob("ss0/*.pl"))
 {
+	if($skipTap==1 && $f=~/.*tap.*/)
+	{
+		next;
+	}
 	$pyF=$f;
 	$pyF=~s/\.pl/.py/g;
 	print $f," ",$pyF,"\n";
@@ -14,6 +18,10 @@ foreach my $f(glob("ss0/*.pl"))
 print "End of Subset 0\n\n";
 foreach my $f(glob("ss1/*.pl"))
 {
+	if($skipTap==1 && $f=~/.*tap.*/)
+	{
+		next;
+	}
 	$pyF=$f;
 	$pyF=~s/\.pl/.py/g;
 	print $f," ",$pyF,"\n";
@@ -25,6 +33,10 @@ foreach my $f(glob("ss1/*.pl"))
 print "End of Subset 1\n\n";
 foreach my $f(glob("ss2/*.pl"))
 {
+	if($skipTap==1 && $f=~/.*tap.*/)
+	{
+		next;
+	}
 	$pyF=$f;
 	$pyF=~s/\.pl/.py/g;
 	print $f," ",$pyF,"\n";
@@ -37,6 +49,10 @@ foreach my $f(glob("ss2/*.pl"))
 print "End of Subset 2\n\n";
 foreach my $f(glob("ss3/*.pl"))
 {
+	if($skipTap==1 && $f=~/.*tap.*/)
+	{
+		next;
+	}
 	$pyF=$f;
 	$pyF=~s/\.pl/.py/g;
 	print $f," ",$pyF,"\n";
@@ -67,6 +83,10 @@ foreach my $f(glob("ss3/*.pl"))
 print "End of Subset 3\n\n";
 foreach my $f(glob("test/*.pl"))
 {
+	if($skipTap==1 && $f=~/.*tap.*/)
+	{
+		next;
+	}
 	$pyF=$f;
 	$pyF=~s/\.pl/.py/g;
 	print $f," ",$pyF,"\n";
@@ -88,6 +108,10 @@ foreach my $f(glob("test/*.pl"))
 print "End of Test\n\n";
 foreach my $f(glob("ss4/*.pl"))
 {
+	if($skipTap==1 && $f=~/.*tap.*/)
+	{
+		next;
+	}
 	$pyF=$f;
 	$pyF=~s/\.pl/.py/g;
 	print $f," ",$pyF,"\n";

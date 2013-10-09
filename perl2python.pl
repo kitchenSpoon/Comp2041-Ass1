@@ -4,8 +4,33 @@
 # as a starting point for COMP2041/9041 assignment 
 # http://cgi.cse.unsw.edu.au/~cs2041/13s2/assignments/perl2python
 
+#################################################################
+#Written by Jing Wu (Jack) Lian, z3450623
+#
+#################################################################
+#To quickly find any case use ctrl find and type hash then its name
+#Example : join - "#join"
+#Example : while loops - "#while"
+#Example : push - "#push"
+#Example : hash - "#hash"
+#Example : for print you may need extra # - "####print" 
 
-$impSys=1;
+#I've used two pass through the code,
+#In the first pass, my program checks for keywords such as ARGV
+#and sets the flags on which modules to import, Also do some cleanup
+
+#In the second pass I have a huge if else that checks what type
+#of line it is and print them after translation
+
+#I've use sys.stdout.write to cover the prints with and without \n
+
+#################################################################
+
+
+
+
+#flags and hashs
+$impSys=0;
 $impFI=0;
 $impRE=0;
 %varTypes;
@@ -16,7 +41,7 @@ $impRE=0;
 while ($line = <>) {
 	#Check what modules i need to import
 	#import sys if theres stdin and argv stuff
-	if ($line =~ /.*<STDIN>.*/ or $line =~ /.*\@ARGV.*/ or $line =~ /.*\$#ARGV.*/) {
+	if ($line =~ /.*print.*/ || $line =~ /.*<STDIN>.*/ or $line =~ /.*\@ARGV.*/ or $line =~ /.*\$#ARGV.*/) {
 		$impSys=1;
 	}
 	#import fileinput
@@ -39,7 +64,7 @@ while ($line = <>) {
 		
 	}
 	######################################################
-	# ! check for the ! operator and turn it into not
+	#! check for the ! operator and turn it into not
 	if ($line =~ m{[^#"]+![^"]}) { #check ! is not the first line
 		#!
 		
@@ -47,7 +72,7 @@ while ($line = <>) {
 
 	}
 	######################################################
-	# || check for || operator 
+	#|| check for || operator 
 	if ($line =~ m{.*\|\|.*}) {
 		#||
 		
@@ -55,7 +80,7 @@ while ($line = <>) {
 
 	}
 	######################################################
-	# && check for && operator 
+	#&& check for && operator 
 	if ($line =~ m{.*&&.*}) {
 		#&&
 		
@@ -63,7 +88,7 @@ while ($line = <>) {
 
 	}
 	######################################################
-	# .= check for concatenation operator
+	#.= check for concatenation operator
 	if ($line =~ m{.*\.=.*}) {
 		#.=
 		
@@ -88,8 +113,30 @@ while ($line = <>) {
 		
 	}
 	######################################################
-	#split
+	#split non-bracket
 	#match for split(stuff,stuff)
+	if ($line =~ m{(.*)split\s+(.*),(.*)(.*)}) {
+		#split
+		
+		$before =$1;
+		$splitFirstArg=$2;
+		$splitSecondArg=$3;
+		$after=$4;
+		if($splitFirstArg=~m{//}) # split with regex
+		{
+			$line = "$before"."$splitSecondArg.split(r'$splitFirstArg')$afters\n";
+		}
+		else #split without regex
+		{
+			$line = "$before"."$splitSecondArg.split($splitFirstArg)$afters\n";
+		}
+		
+
+		
+	}
+	######################################################
+	#split with bracket
+	#match for split(stuff1,stuff2)
 	if ($line =~ m{(.*)split\((.*),(.*)\)(.*)}) {
 		#split
 		
@@ -97,13 +144,33 @@ while ($line = <>) {
 		$splitFirstArg=$2;
 		$splitSecondArg=$3;
 		$after=$4;
-		
+		#"stuff2".split(stuff1)
 		$line = "$before"."$splitSecondArg.split($splitFirstArg)$afters\n";
 
 		
 	}
 	######################################################
-	#join
+	#join non-bracket
+	if ($line =~ m{(.*)join\s+(.*),(.*)\s*;\s*}) {
+		#join
+		# i match print join --ERROR!
+		
+		$before =$1;
+		$joinFirstArg=$2;
+		$joinSecondArg=$3;
+		$after=$4;
+		
+		#test if we're joing normal array or the array of inputs
+		if($joinSecondArg =~ /.*\@ARGV.*/) {
+			$line = "$before"."$joinFirstArg."."join(sys.argv[1:])$after\n"; 
+		}
+		else {
+			$joinSecondArg =~ s/@//g;
+			$line = "$before"."$joinFirstArg."."join($joinSecondArg)$after\n"; 
+		}
+	}
+	######################################################
+	#join with bracket
 	if ($line =~ m{(.*)join\((.*),(.*)\)(.*)}) {
 		#join
 		# i match print join --ERROR!
@@ -122,8 +189,6 @@ while ($line = <>) {
 			$joinSecondArg =~ s/@//g;
 			$line = "$before"."$joinFirstArg."."join($joinSecondArg)$after\n"; 
 		}
-
-		
 	}
 	######################################################
 	#$#ARGV
@@ -135,12 +200,9 @@ while ($line = <>) {
 	}
 	if ($line =~ m{.*\$ARGV\[(\$.*)\].*}) {
 		#$ARGV[]
-		#print $1,"a\n";
 		$line =~ s/ARGV/sys.argv/g;
 		#$line =~ s/$1/$1 + 1/g; #why this no work??!!?
 		$line =~ s/\[(\$.*)\]/\[$1 + 1\]/g;
-		#print $1,"b\n";
-		#print $line;
 		
 		
 	}
@@ -153,7 +215,7 @@ while ($line = <>) {
 		$var=$2;
 		$toMatch=$3;
 		$toReplace=$4;
-		
+		#var = re.sub(r'match','replace','source')
 		$line = "$indent$var = re.sub(r'$toMatch','$toReplace',$var)\n";
 		
 	}
@@ -163,7 +225,8 @@ while ($line = <>) {
 		$var=$1;
 		$toMatch=$2;
 		#need to test this case
-		#print "$var\n";
+		
+		#re.match(r'match','source')
 		$line =~ s{\$[a-zA-Z0-9]+\s*=~\s*/.*/}{bool(re.match(r'$toMatch',$var))}g;
 	}
 	
@@ -358,7 +421,24 @@ foreach $line (@bunchOfLines) {
 		#if conditions }
 		#do nothing
 		$line =~ s/}//g;
-	
+	#} elsif ($line =~ /(\s*)for\s*\((.*);(.*);(.*)\)\s*{/) {
+	#	#C style for loop
+	#	$indent=$1;
+	#	$init=$2;
+	#	$condition=$3;
+	#	$todo=$4;
+	#	#print "asdasdasdsadas\n\n";
+	#	
+	#	$init =~ s/\$//g;
+	#	$condition =~ s/\$//g;
+	#	$todo =~ s/\$//g;
+	#	$todo =~ s/\+\+/+=1/g;
+	#	$todo =~ s/--/-=1/g;
+	#	print "$indent"."$init\n";
+	#	print "$indent"."while($condition):\n";
+	#	print "$indent"."   "."$todo\n";
+		
+		
 	} elsif ($line =~ /(\s*)foreach\s*(.*)\s*\((0)\.\.(.+)\)\s*{/) {
 		#foreach $i(0..$#ARGV) -> xrange($#ARGV) 
 		#foreach $i(0..anything) -> xrange(anything)

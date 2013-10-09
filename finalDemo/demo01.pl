@@ -1,19 +1,20 @@
 #!/usr/bin/perl -w
 
-#display content of hash in certain format
-#week7 Q4
+#subset 3
+#tetrahedral.pl
 
-sub printHash {
-	my (%tab) = @_;
-	my $n = 0;
-	foreach $k (sort keys %tab) {
-		print "[$k] => $tab{$k}\n";
-		$n++;
-	}
-	return $n;
+$n = 1;
+while ($n <= 10) {
+    $total = 0;
+    $j = 1;
+    while ($j <= $n) {
+        $i = 1;
+        while ($i <= $j) {
+            $total = $total + $i;
+            $i = $i + 1;
+        }
+        $j = $j + 1;
+    }
+    print "$total\n";
+    $n = $n + 1;
 }
-
-%h = ("David"=>"green", "Phil"=>"blue", "Andrew"=>"red", "John"=>"blue");
-
-$nitems = printHash(%h);
-print "#items = $nitems\n";

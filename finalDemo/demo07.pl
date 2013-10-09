@@ -1,15 +1,16 @@
 #!/usr/bin/perl -w
-# delete blank lines from specified files
-#week8 Q9
 
-die "Usage: $0 <files>\n" if !@ARGV;
+#Prints a table of multiplications
+#week8 Q8
 
-foreach $file (@ARGV) {
-	open(IN, "$file") || die("Can not open $file: $!");
-	@lines = <IN>;  # reads entire file into array
-	close(IN);
-	open(OUT, ">$file") || die("Can not open $file: $!");
-	foreach $line (@lines) {    
-		print OUT $line if $line !~ /^\s*$/;
-	}
-	close(OUT);
+die "Usage $0 <n> <m> <column-width>" if @ARGV != 3;
+$n = $ARGV[0];
+$m = $ARGV[1];
+$width = $ARGV[2];
+foreach $x (1..$n) {
+	printf "%${width}d", $x;
+    foreach $y (1..$m) {
+        printf "%${width}d", $x*$y;
+    }
+    print "\n";
+}

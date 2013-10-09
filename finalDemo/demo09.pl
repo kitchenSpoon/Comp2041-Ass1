@@ -1,14 +1,13 @@
-#!/usr/bin/perl -w
-# there are perl libraries which provide a  better way to fetch web pages
+#!/usr/local/bin/perl
 
-#week6 Q2
+@array = split(' ',"1 2 3 4");
+print @array,"\n";
+$temp = join(' ',@array);
+print $temp,"\n"; 
+print join(' ',split(' ',"Hi Weee Yay")),"\n";
 
-foreach $url (@ARGV) {
-	open F, "wget -q -O- $url|" or die;
-	while ($line = <F>) {
-		foreach $number (split /[^\d\- ]/, $line) {
-			$number =~ s/\D//g;
-			print "$number\n" if length $number >= 8 && length $number <= 15;
-		}
-	}
-}
+@array = split ' ',"1 2 3 4";
+print @array,"\n";
+$temp = join ' ',@array;
+print $temp,"\n"; 
+print join(' ',split(' ',"Hi Weee Yay")),"\n";

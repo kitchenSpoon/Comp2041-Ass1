@@ -1,24 +1,18 @@
 #!/usr/bin/perl -w
 
-#Takes an integer argument n and reads the next n lines of input and returns them as a string.
-#week8 Q3
+#subset4
+#odd0.pl
 
-$n = shift @ARGV or die "Usage: $0 <n-lines>\n";
-
-sub n_lines0($) {
-	my ($n) = @_;
-	my $text = "";
-	while ($n-- > 0) {
-		$text .= <>;
-	}
-	return $text;
+$number = 0;
+while ($number >= 0) {
+    print "Enter number:\n";
+    $number = <STDIN>;
+    if ($number >= 0) {
+        if ($number % 2 == 0) {
+            print "Even\n";
+        } else {
+            print "Odd\n";
+        }
+    }
 }
-
-sub n_lines1($) {
-	my ($n) = @_;
-	my $text = "";
-	$text .= <> foreach (1..$n);
-	return $text;
-}	
-
-print n_lines1($n);
+print "Bye\n";
