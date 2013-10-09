@@ -115,20 +115,20 @@ while ($line = <>) {
 	######################################################
 	#split non-bracket
 	#match for split(stuff,stuff)
-	if ($line =~ m{(.*)split\s+(.*),(.*)(.*)}) {
+	if ($line =~ m{(.*)split\s+(.*),(.*)}) {
 		#split
 		
 		$before =$1;
 		$splitFirstArg=$2;
 		$splitSecondArg=$3;
-		$after=$4;
-		if($splitFirstArg=~m{//}) # split with regex
+		if($splitFirstArg=~m{/.*/}) # split with regex
 		{
-			$line = "$before"."$splitSecondArg.split(r'$splitFirstArg')$afters\n";
+			$splitFirstArg =~ s[/][]g;
+			$line = "$before"."$splitSecondArg.split('$splitFirstArg')\n";
 		}
 		else #split without regex
 		{
-			$line = "$before"."$splitSecondArg.split($splitFirstArg)$afters\n";
+			$line = "$before"."$splitSecondArg.split($splitFirstArg)\n";
 		}
 		
 
