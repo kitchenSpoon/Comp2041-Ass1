@@ -3,5 +3,5 @@ import sys
 import re
 
 for arg  in sys.argv[1:]:
-#asd
+#variable interpolation
     sys.stdout.write("{arg}\n".format(**locals()))

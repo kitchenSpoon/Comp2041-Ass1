@@ -5,9 +5,9 @@ import re
 a="Hello"
 
 if (bool(re.match(r'Hello', a))) : 
-#asd
+#variable interpolation
 	sys.stdout.write("Yes it match\n".format(**locals()))
 
 if (bool(re.match(r'Hel', a))) : 
-#asd
+#variable interpolation
 	sys.stdout.write("Yes it does not match\n".format(**locals()))

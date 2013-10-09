@@ -8,5 +8,5 @@ line = ""
 line_count = 0
 for line  in sys.stdin:
     line_count+=1
-#asd
+#variable interpolation
 sys.stdout.write("{line_count} lines\n".format(**locals()))

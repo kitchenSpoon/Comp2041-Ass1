@@ -6,12 +6,12 @@ a=1
 b=0
 
 if ( a== a and  b== b): 
-#asd
+#variable interpolation
         sys.stdout.write("True\n".format(**locals()))
 if ( a== a or  b== a): 
-#asd
+#variable interpolation
 	sys.stdout.write("True\n".format(**locals()))
 if (not( a== b or  b== a)): 
-#asd
+#variable interpolation
         sys.stdout.write("True\n".format(**locals()))
 

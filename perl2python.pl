@@ -229,7 +229,7 @@ foreach $line (@bunchOfLines) {
 		$var =~ s/.*\$([a-zA-Z0-9_]+).*/$1/g;
 		$toBePrinted =~ s/\$([a-zA-Z0-9_]+)/{$1}/g;
 		$line = "$indent"."sys.stdout.write(\"$toBePrinted\".format(**locals()))\n";
-		print "#asd\n";
+		print "#variable interpolation\n";
 		print $line;
 	
 	#################################################################Print
@@ -314,21 +314,23 @@ foreach $line (@bunchOfLines) {
 		$line =~ s/{/:/g;
 		print "$line";	
 		
-	} elsif ($line =~ /^\s*while\s*\((.*)\s*=\s*<STDIN>\)\s*{$/) {
+	} elsif ($line =~ /^(\s*)while\s*\((.*)\s*=\s*<STDIN>\)\s*{$/) {
 	
 		#while conditions while($line = <STDIN>){
-		$var = $1;
+		$indent = $1;
+		$var = $2;
 		$var =~ s/\$//g;
 		
-		print "for $var in sys.stdin:\n";
+		print "$indent"."for $var in sys.stdin:\n";
 		
-	} elsif ($line =~ /^\s*while\s*\((.*)\s*=\s*<>\)\s*{$/) {
+	} elsif ($line =~ /^(\s*)while\s*\((.*)\s*=\s*<>\)\s*{$/) {
 	
 		#while conditions while($line = <>){
-		$var = $1;
+		$indent = $1;
+		$var = $2;
 		$var =~ s/\$//g;
 		
-		print "for $var in fileinput.input():\n";	
+		print "$indent"."for $var in fileinput.input():\n";	
 		
 	} elsif ($line =~ /^\s*while\s*\(.*\)\s*{$/) {
 		
@@ -357,39 +359,41 @@ foreach $line (@bunchOfLines) {
 		#do nothing
 		$line =~ s/}//g;
 	
-	} elsif ($line =~ /\s*foreach\s*(.*)\s*\((0)\.\.(.+)\)\s*{/) {
+	} elsif ($line =~ /(\s*)foreach\s*(.*)\s*\((0)\.\.(.+)\)\s*{/) {
 		#foreach $i(0..$#ARGV) -> xrange($#ARGV) 
 		#foreach $i(0..anything) -> xrange(anything)
-		$var=$1; #this has a extra space behind it WHY!!!???
-		$firstNum=$2;
-		$secondNum=$3;
+		$indent=$1;
+		$var=$2; #this has a extra space behind it WHY!!!???
+		$firstNum=$3;
+		$secondNum=$4;
 		if ($secondNum!~/len\(sys.argv\) - 1/) { # check for $#ARGV
 			$secondNum++;
 		}
 		
 		$var =~ s/\$//g;
-		print "for $var in xrange($secondNum):\n";
+		print "$indent"."for $var in xrange($secondNum):\n";
 		
 		
-	} elsif ($line =~ /\s*foreach\s*(.*)\s*\(([^0]+)\.\.(.+)\)\s*{/) {
+	} elsif ($line =~ /(\s*)foreach\s*(.*)\s*\(([^0]+)\.\.(.+)\)\s*{/) {
 		#foreach $i(2..4) -> xrange(2,4)
-		$var=$1; #this has a extra space behind it WHY!!!???
-		$firstNum=$2;
-		$secondNum=$3;
+		$indent=$1;
+		$var=$2; #this has a extra space behind it WHY!!!???
+		$firstNum=$3;
+		$secondNum=$4;
 		if ($secondNum!~/len\(sys.argv\) - 1/) {# check for $#ARGV  
 			$secondNum++;
 		}
 		$var =~ s/\$//g;
-		print "# $& 2\n";
-		print "for $var in xrange($firstNum,$secondNum):\n";
+		print "$indent"."for $var in xrange($firstNum,$secondNum):\n";
 		
 	
 		
-	} elsif ($line =~ /\s*foreach\s*(.*)\s*\((\@ARGV)\)\s*{/) {
+	} elsif ($line =~ /(\s*)foreach\s*(.*)\s*\((\@ARGV)\)\s*{/) {
 		#foreach $arg (@ARGV)
-		$var=$1;
+		$indent=$1;
+		$var=$2;
 		$var =~ s/\$//g;
-		print "for $var in sys.argv[1:]:\n";
+		print "$indent"."for $var in sys.argv[1:]:\n";
 	
 	#######################################################Chomp
 	} elsif ($line =~ /(\s*)chomp (.*)\s*;\s*/) {

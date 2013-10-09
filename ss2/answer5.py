@@ -7,5 +7,5 @@ if ( answer > 0) :
     answer = answer + 2
 if ( answer == 43) : 
     answer = answer - 1
-#asd
+#variable interpolation
 sys.stdout.write("{answer}\n".format(**locals()))

@@ -3,5 +3,5 @@ import sys
 import re
 
 answer = 1 + 7 * 7 - 8
-#asd
+#variable interpolation
 sys.stdout.write("{answer}\n".format(**locals()))

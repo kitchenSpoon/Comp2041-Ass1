@@ -4,6 +4,6 @@ import re
 
 x = 1
 while   x <= 10  :
-#asd
+#variable interpolation
     sys.stdout.write("{x}\n".format(**locals()))
     x = x + 1

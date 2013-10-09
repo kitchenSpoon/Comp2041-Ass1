@@ -3,11 +3,11 @@ import sys
 import re
 
 while  1  :
-#asd
+#variable interpolation
     sys.stdout.write("Give me cookie\n".format(**locals()))
     line = sys.stdin.readline();
     line = line.rstrip()
     if ( line=="cookie") : 
         break
-#asd
+#variable interpolation
 sys.stdout.write("Thank you\n".format(**locals()))

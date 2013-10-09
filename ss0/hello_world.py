@@ -2,5 +2,5 @@
 import sys
 import re
 
-#asd
+#variable interpolation
 sys.stdout.write("hello world\n".format(**locals()))

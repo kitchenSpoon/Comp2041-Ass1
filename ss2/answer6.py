@@ -4,5 +4,5 @@ import re
 answer = 0
 while   answer < 36  :
     answer = answer + 7
-#asd
+#variable interpolation
 sys.stdout.write("{answer}\n".format(**locals()))

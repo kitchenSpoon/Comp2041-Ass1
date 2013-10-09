@@ -3,7 +3,7 @@ import sys
 import re
 
 name = "jack"
-print "%s Is Awesomenot" % name 
+print "%s Is Awesome" % name 
 print "%d" % 3.1415126 
 print "The cost is %6.2f" % 499 
 print "%04d" % 20 

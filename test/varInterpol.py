@@ -5,5 +5,5 @@ import re
 a="firstValue"
 b="secondValue"
 c="thirdValue"
-#asd
+#variable interpolation
 sys.stdout.write("{a} {b} {c}\n".format(**locals()))

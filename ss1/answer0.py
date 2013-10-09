@@ -3,5 +3,5 @@ import sys
 import re
 
 answer = 42
-#asd
+#variable interpolation
 sys.stdout.write("{answer}\n".format(**locals()))
